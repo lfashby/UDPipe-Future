@@ -205,7 +205,7 @@ class Network:
                 self.current_loss, self.update_loss = tf.metrics.mean(loss, weights=weights_sum)
                 self.reset_metrics = tf.variables_initializer(tf.get_collection(tf.GraphKeys.METRIC_VARIABLES))
                 self.metrics = dict((metric, tf.placeholder(tf.float32, [])) for metric in self.METRICS)
-                for dataset in ["dev", "dev-udpipe", "test"]:
+                for dataset in ["dev", "test"]:
                     self.summaries[dataset] = [tf.contrib.summary.scalar(dataset + "/loss", self.current_loss)]
                     for metric in self.METRICS:
                         self.summaries[dataset].append(tf.contrib.summary.scalar("{}/{}".format(dataset, metric),
@@ -363,7 +363,8 @@ if __name__ == "__main__":
     parser.add_argument("--word_dropout", default=0.2, type=float, help="Word dropout")
     # Load defaults
     args, defaults = parser.parse_args(), []
-    with open(re.sub(r"\d+[a-z]*.py$", ".args", __file__), "r") as args_file:
+    # with open(re.sub(r"\d+[a-z]*.py$", ".args", __file__), "r") as args_file:
+    with open("ud_parser.args", "r") as args_file:
         for line in args_file:
             columns = line.rstrip("\n").split()
             if re.search(columns[0], args.basename): defaults.extend(columns[1:])
@@ -435,15 +436,12 @@ if __name__ == "__main__":
     # Train
     dev = ud_dataset.UDDataset("{}-ud-dev.conllu".format(args.basename), args.lr_allow_copy, root_factors,
                                train=train, shuffle_batches=False)
-    dev_udpipe = ud_dataset.UDDataset("{}-ud-dev-udpipe.conllu".format(args.basename), args.lr_allow_copy, root_factors,
-                               train=train, shuffle_batches=False)
     dev_conllu = conll18_ud_eval.load_conllu_file("{}-ud-dev.conllu".format(args.basename))
     dev_best = 0
     for i, (epochs, learning_rate) in enumerate(args.epochs):
         for epoch in range(epochs):
             network.train_epoch(train, learning_rate, args)
 
-            network.evaluate("dev-udpipe", dev_udpipe, dev_conllu, args)
             dev_accuracy, metrics = network.evaluate("dev", dev, dev_conllu, args)
             metrics_log = ", ".join(("{}: {:.2f}".format(metric, 100 * metrics[metric].f1) for metric in Network.METRICS))
             print("Epoch {}, lr {}, dev {}".format(epoch + 1, learning_rate, metrics_log), file=log_file, flush=True)
