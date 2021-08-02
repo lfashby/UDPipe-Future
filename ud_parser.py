@@ -358,7 +358,7 @@ if __name__ == "__main__":
     parser.add_argument("--rnn_layers_tagger", default=1, type=int, help="Tagger RNN layers.")
     parser.add_argument("--tags", default="UPOS,XPOS,FEATS,LEMMAS", type=str, help="Tags.")
     parser.add_argument("--tag_layers", default=1, type=int, help="Additional tag layers.")
-    parser.add_argument("--threads", default=4, type=int, help="Maximum number of threads to use.")
+    parser.add_argument("--threads", default=8, type=int, help="Maximum number of threads to use.")
     parser.add_argument("--we_dim", default=512, type=int, help="Word embedding dimension.")
     parser.add_argument("--word_dropout", default=0.2, type=float, help="Word dropout")
     # Load defaults
