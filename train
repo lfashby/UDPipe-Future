@@ -1,0 +1,39 @@
+#!/bin/bash
+
+params=(
+  "--epochs '40:1e-1,20:1e-2' --batch_size=32 --word_dropout=0.2 --label_smoothing=0.03"
+  "--epochs '40:1e-1,20:1e-2' --batch_size=128 --word_dropout=0.2 --label_smoothing=0.03"
+  "--epochs '40:1e-1,20:1e-2' --batch_size=32 --word_dropout=0.4 --label_smoothing=0.03"
+  "--epochs '40:1e-1,20:1e-2' --batch_size=32 --word_dropout=0.2 --label_smoothing=0.1"
+  "--epochs '40:1e-2,20:1e-3' --batch_size=32 --word_dropout=0.2 --label_smoothing=0.03"
+  "--epochs '40:1e-1,20:1e-3' --batch_size=128 --word_dropout=0.2 --label_smoothing=0.03"
+  "--epochs '40:1e-1,20:1e-3' --batch_size=32 --word_dropout=0.4 --label_smoothing=0.03"
+  "--epochs '40:1e-1,20:1e-3' --batch_size=32 --word_dropout=0.2 --label_smoothing=0.1"
+  "--epochs '40:1e-3,20:1e-4' --batch_size=32 --word_dropout=0.2 --label_smoothing=0.03"
+  "--epochs '40:1e-1,20:1e-4' --batch_size=128 --word_dropout=0.2 --label_smoothing=0.03"
+  "--epochs '40:1e-1,20:1e-4' --batch_size=32 --word_dropout=0.4 --label_smoothing=0.03"
+  "--epochs '40:1e-1,20:1e-4' --batch_size=32 --word_dropout=0.2 --label_smoothing=0.1"
+  "--epochs '40:1e-4,20:1e-5' --batch_size=32 --word_dropout=0.2 --label_smoothing=0.03"
+  "--epochs '40:1e-1,20:1e-5' --batch_size=128 --word_dropout=0.2 --label_smoothing=0.03"
+  "--epochs '40:1e-1,20:1e-5' --batch_size=32 --word_dropout=0.4 --label_smoothing=0.03"
+  "--epochs '40:1e-1,20:1e-5' --batch_size=32 --word_dropout=0.2 --label_smoothing=0.1"
+)
+
+lang="$1"; shift
+# agrs=""
+# while true; do
+#   case "$1" in
+#     -*) args="$args $1"; shift 1; continue;;
+#   esac
+#   break
+# done
+
+for param in "${params[@]}"; do
+  d=ud-2.2-conll18/$lang
+  python ud_parser.py $d/$lang $param
+done
+# for code in "$@"; do
+#   d=ud-2.2-conll18/$code
+#   # qsub -q gpu*@dll* -cwd -b y -l gpu=1,gpu_cc_min3.5=1 -j y withcuda 
+#   # python ud_parser.py $d/$code $args
+# done
